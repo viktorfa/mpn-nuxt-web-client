@@ -40,17 +40,17 @@ export const calculateValue = ({ amount, unit, pricing }) => {
 
 export const getProductValue = ({ quantity, value, pricing }) => {
   if (value) {
-    if (value.size && value.size.amount) {
+    if (value.size && value.size.amount && value.size.amount.max) {
       return getValueString(value.size);
-    } else if (value.pieces && value.pieces.amount) {
+    } else if (value.pieces && value.pieces.amount && value.pieces.amount.max) {
       return getValueString(value.pieces);
     }
   }
   if (pricing) {
     if (quantity) {
-      if (quantity.size && quantity.size.amount) {
+      if (quantity.size && quantity.size.amount && quantity.size.amount.max) {
         return getValueString(calculateValue({ ...quantity.size, pricing }));
-      } else if (quantity.pieces && quantity.pieces.amount) {
+      } else if (quantity.pieces && quantity.pieces.amount && quantity.pieces.amount.max) {
         return getValueString(calculateValue({ ...quantity.pieces, pricing }));
       }
     }

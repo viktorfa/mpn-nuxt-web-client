@@ -1,6 +1,9 @@
 <template>
   <div class="result-list-item flex flex-col text-center">
-    <router-link :to="`/tilbud/${id}`" class="search-result-link flex flex-col justify-between">
+    <router-link
+      :to="`/tilbud/${encodedId}`"
+      class="search-result-link flex flex-col justify-between"
+    >
       <div>
         <div v-lazyload v-if="showDealerLogo && dealerLogoSrc">
           <img class="dealer-logo-image" :data-url="dealerLogoSrc" :alt="dealer" />
@@ -46,6 +49,9 @@ export default {
         return getDealerLogoSrc(this.dealer);
       }
       return "";
+    },
+    encodedId() {
+      return encodeURIComponent(this.id);
     },
     truncatedSubtitle() {
       const maxLength = 56;

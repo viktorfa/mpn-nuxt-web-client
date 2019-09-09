@@ -1,5 +1,6 @@
 <template>
   <div>
+  
     <div class="flex flex-wrap justify-around">
       <template v-for="product in _products">
         <ProductListItem
