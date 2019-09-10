@@ -7,7 +7,7 @@
           v-for="item of config.items"
           :key="item.key"
           small
-          :color="options[`${k}.${item.key}`] === false ? '' : 'orange'"
+          :color="options.filter[`${config.key}.${item.key}`] === false ? '' : 'orange'"
           @click="(event) => handleClickFilterButton({event, config, item})"
         >{{item.text}}</v-btn>
       </div>
@@ -16,7 +16,7 @@
           v-for="item of config.items"
           :key="item.key"
           small
-          :color="options[`${k}.${item.key}`] === true ? 'orange' : ''"
+          :color="options.filter[`${config.key}.${item.key}`] === true ? 'orange' : ''"
           @click="(event) => handleClickFilterButton({event, config, item})"
         >{{item.text}}</v-btn>
       </div>
@@ -46,6 +46,15 @@
         </div>
       </div>
     </div>
+    <div class="flex flex-wrap">
+      <v-btn
+        v-for="(config, k) of sortOptions"
+        :key="config.key"
+        small
+        :color="options.sort.key === config.key ? 'orange' : ''"
+        @click="(event) => handleClickSortButton({event, config})"
+      >{{config.text}}</v-btn>
+    </div>
   </div>
 </template>
 
@@ -53,6 +62,7 @@
 import { mapState } from "vuex";
 
 import { getFilterFunctions } from "~/util/products/filter";
+import { getSortFunction } from "~/util/products/sort";
 
 const defaultFilterOptions = {
   dealers: {
@@ -88,50 +98,103 @@ const defaultFilterOptions = {
   },
 };
 
+const defaultSortOptions = {
+  price: {
+    key: "price",
+    text: "Pris",
+    path: ["pricing", "price"],
+    toggleable: true,
+    defaultDesc: false,
+  },
+  size: {
+    key: "size",
+    text: "Størrelse",
+    path: ["quantity", "size"],
+    toggleable: true,
+  },
+  value: {
+    key: "value",
+    text: "Verdi",
+    calculation: {
+      op1: ["pricing", "price"],
+      operand: "/",
+      op2: ["quantity", "size"],
+    },
+    defaultDesc: false,
+  },
+  score: { key: "score", text: "Relevans", path: ["score"] },
+};
+
 export default {
   name: "SortAndFilterMenu",
   data() {
     return {
-      options: {},
+      options: { sort: { key: "score", desc: true }, filter: {} },
       filterOptions: defaultFilterOptions,
+      sortOptions: defaultSortOptions,
     };
   },
   computed: {
     ...mapState(["searchResults"]),
   },
   methods: {
+    handleClickSortButton({ event, config }) {
+      let desc = config.defaultDesc !== false;
+      if (config.toggleable) {
+        if (this.options.sort.key === config.key) {
+          desc = !this.options.sort.desc;
+        }
+      }
+      const newSelectedSort = { key: config.key, desc };
+      this.options = { ...this.options, sort: newSelectedSort };
+      const filterFunctions = getFilterFunctions({
+        selectedOptions: this.options.filter,
+        filterOptions: this.filterOptions,
+      });
+      const sortFunction = getSortFunction({
+        selectedOption: this.options.sort,
+        sortOptions: this.sortOptions,
+      });
+      this.$store.dispatch("FILTER", {
+        filters: filterFunctions,
+        sort: sortFunction,
+      });
+    },
     handleClickFilterButton({ event, config, item, boundary }) {
       if (config.type === "enum") {
-        this.options = {
-          ...this.options,
+        this.options.filter = {
+          ...this.options.filter,
           [`${config.key}.${item.key}`]:
-            this.options[`${config.key}.${item.key}`] === false,
+            this.options.filter[`${config.key}.${item.key}`] === false,
         };
       } else if (config.type === "include") {
-        this.options = {
-          ...this.options,
+        this.options.filter = {
+          ...this.options.filter,
           [`${config.key}.${item.key}`]:
-            this.options[`${config.key}.${item.key}`] !== true,
+            this.options.filter[`${config.key}.${item.key}`] !== true,
         };
       } else if (config.type === "number") {
-        this.options = {
-          ...this.options,
+        this.options.filter = {
+          ...this.options.filter,
           [`${config.key}.${boundary}`]: event.target.value,
         };
       } else if (config.type === "boolean") {
-        this.options = {
-          ...this.options,
+        this.options.filter = {
+          ...this.options.filter,
           [`${config.key}`]: event.target.checked,
         };
       }
       const filterFunctions = getFilterFunctions({
-        selectedOptions: this.options,
+        selectedOptions: this.options.filter,
         filterOptions: this.filterOptions,
       });
+      const sortFunction = getSortFunction({
+        selectedOption: this.options.sort,
+        sortOptions: this.sortOptions,
+      });
       this.$store.dispatch("FILTER", {
-        filter: {
-          filters: filterFunctions,
-        },
+        filters: filterFunctions,
+        sort: sortFunction,
       });
     },
   },

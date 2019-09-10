@@ -4,6 +4,7 @@ import { productMutations } from "./_mutations";
 import { getPromotedOffers, getGroceryOffer, searchGroceryOffers } from "~/api";
 import { isProductUri } from "~/util/products";
 import { filterProducts } from "~/util/products/filter";
+import { getSortedProducts } from "~/util/products/sort";
 
 export const productActions = {
   EXECUTE_SEARCH_QUERY: "EXECUTE_SEARCH_QUERY",
@@ -62,13 +63,15 @@ export const actions = {
     }
     commit(productMutations.setIsSearching, false);
   },
-  async [productActions.FILTER]({ commit, state }, { filter }) {
+  async [productActions.FILTER]({ commit, state }, { filters, sort }) {
     const { data: products, error } = await searchGroceryOffers(
       state.searchQuery,
     );
     if (products) {
-      const { filters } = filter;
-      const filteredProducts = filterProducts(products, filters);
+      let filteredProducts = filterProducts(products, filters);
+      if (sort) {
+        filteredProducts = getSortedProducts(filteredProducts, sort);
+      }
       commit(productMutations.clearSearchResults);
       commit(productMutations.loadSearchResults, filteredProducts);
     } else {

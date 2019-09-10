@@ -20,6 +20,7 @@
           <strong>{{ formattedPrice }}</strong>
         </div>
         <div v-if="value">{{ value }}</div>
+        <div v-if="size">{{ size }}</div>
         <div v-else :style="{visibility: 'hidden'}">_</div>
       </div>
     </router-link>
@@ -37,6 +38,7 @@ export default {
     image_url: String,
     href: String,
     value: String,
+    size: String,
     id: { type: String, required: true },
     dealer: String,
     description: String,

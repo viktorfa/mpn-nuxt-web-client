@@ -38,6 +38,21 @@ export const calculateValue = ({ amount, unit, pricing }) => {
   };
 };
 
+export const getProductSize = ({ quantity }) => {
+  try {
+    if (quantity.size.unit) {
+      const unit = quantity.size.unit.si.symbol;
+      return `${quantity.size.amount.min *
+        quantity.size.unit.si.factor} ${unit}`;
+    } else {
+      const unit = quantity.size.unit.symbol;
+      return `${quantity.size.amount.min} ${unit}`;
+    }
+  } catch (e) {
+    return "";
+  }
+};
+
 export const getProductValue = ({ quantity, value, pricing }) => {
   if (value) {
     if (value.size && value.size.amount && value.size.amount.max) {
@@ -50,7 +65,11 @@ export const getProductValue = ({ quantity, value, pricing }) => {
     if (quantity) {
       if (quantity.size && quantity.size.amount && quantity.size.amount.max) {
         return getValueString(calculateValue({ ...quantity.size, pricing }));
-      } else if (quantity.pieces && quantity.pieces.amount && quantity.pieces.amount.max) {
+      } else if (
+        quantity.pieces &&
+        quantity.pieces.amount &&
+        quantity.pieces.amount.max
+      ) {
         return getValueString(calculateValue({ ...quantity.pieces, pricing }));
       }
     }

@@ -1,6 +1,5 @@
 import { provenanceTypes } from "~/util/enums";
-import { getProductValue } from "~/util/products";
-
+import { getProductValue, getProductSize } from "~/util/products";
 
 export const getStandardProduct = (product) => {
   switch (product.provenance) {
@@ -27,6 +26,7 @@ export const getStandardProduct = (product) => {
         image_url: product.image_url,
         id: product.uri,
         value: getProductValue(product),
+        size: getProductSize(product),
       };
   }
 };
