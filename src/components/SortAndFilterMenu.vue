@@ -70,7 +70,7 @@ const defaultFilterOptions = {
     type: "enum",
     path: ["provenance"],
     items: [
-      { key: "holdbart.no", text: "holdbart" },
+      { key: "www.holdbart.no", text: "holdbart" },
       { key: "gottebiten.se", text: "gottebiten" },
       { key: "swecandy.se", text: "swecandy" },
       { key: "yoolando.com", text: "yoolando" },

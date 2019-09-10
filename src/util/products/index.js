@@ -42,8 +42,9 @@ export const getProductSize = ({ quantity }) => {
   try {
     if (quantity.size.unit) {
       const unit = quantity.size.unit.si.symbol;
-      return `${quantity.size.amount.min *
-        quantity.size.unit.si.factor} ${unit}`;
+      return `${(quantity.size.amount.min * quantity.size.unit.si.factor)
+        .toFixed(2)
+        .replace(/\.00$/, "")} ${unit}`;
     } else {
       const unit = quantity.size.unit.symbol;
       return `${quantity.size.amount.min} ${unit}`;
