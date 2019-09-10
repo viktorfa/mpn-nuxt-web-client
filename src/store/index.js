@@ -15,6 +15,7 @@ const initialState = {
   showDrawer: false,
   detailProduct: null,
   detailProductNotFound: false,
+  filter: {},
 };
 
 export const state = () => initialState;

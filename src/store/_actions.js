@@ -3,7 +3,7 @@ import uniqBy from "lodash/uniqBy";
 import { productMutations } from "./_mutations";
 import { getPromotedOffers, getGroceryOffer, searchGroceryOffers } from "~/api";
 import { isProductUri } from "~/util/products";
-
+import { filterProducts } from "~/util/products/filter";
 
 export const productActions = {
   EXECUTE_SEARCH_QUERY: "EXECUTE_SEARCH_QUERY",
@@ -11,6 +11,7 @@ export const productActions = {
   UPDATE_PROMOTED_PRODUCTS: "UPDATE_PROMOTED_PRODUCTS",
   LOAD_DETAIL_PRODUCT: "LOAD_DETAIL_PRODUCT",
   LOAD_SIMILAR_PRODUCTS: "LOAD_SIMILAR_PRODUCTS",
+  FILTER: "FILTER",
 };
 
 export const actions = {
@@ -37,11 +38,11 @@ export const actions = {
       const filteredProducts = uniqBy(
         data,
         (offer) => offer.heading + offer.dealer + offer.pricing.price,
-        );
-        commit(productMutations.setPromotedProducts, filteredProducts);
-      } else {
-        commit(productMutations.setErrorMessage, error);
-      }
+      );
+      commit(productMutations.setPromotedProducts, filteredProducts);
+    } else {
+      commit(productMutations.setErrorMessage, error);
+    }
     commit(productMutations.setIsLoadingPromotedProducts, false);
     console.log("UPDATE_PROMOTED_PRODUCTS finish");
   },
@@ -60,6 +61,20 @@ export const actions = {
       console.error(error);
     }
     commit(productMutations.setIsSearching, false);
+  },
+  async [productActions.FILTER]({ commit, state }, { filter }) {
+    const { data: products, error } = await searchGroceryOffers(
+      state.searchQuery,
+    );
+    if (products) {
+      const { filters } = filter;
+      const filteredProducts = filterProducts(products, filters);
+      commit(productMutations.clearSearchResults);
+      commit(productMutations.loadSearchResults, filteredProducts);
+    } else {
+      commit(productMutations.setErrorMessage, error);
+      console.error(error);
+    }
   },
   async [productActions.LOAD_DETAIL_PRODUCT]({ commit }, { id }) {
     if (isProductUri(id)) {

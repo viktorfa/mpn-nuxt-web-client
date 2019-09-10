@@ -13,6 +13,7 @@ export const simpleProductSetters = {
   setPromotedProducts: "promotedProducts",
   setErrorMessage: "errorMessage",
   setDetailProduct: "detailProduct",
+  setFilter: "filter",
 };
 
 export const simpleUiSetters = {

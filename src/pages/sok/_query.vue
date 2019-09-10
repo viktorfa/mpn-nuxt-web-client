@@ -1,5 +1,6 @@
 <template>
   <div>
+    <SortAndFilterMenu />
     <div v-show="isSearching === true" class="text-3xl text-center">
       <p>søker etter</p>
       <strong>{{ queryString }}</strong>
@@ -22,11 +23,13 @@ import { mapState } from "vuex";
 
 import { getAllMetaInfo } from "~/util/meta-tags";
 import SearchResults from "~/components/SearchResults.vue";
+import SortAndFilterMenu from "~/components/SortAndFilterMenu.vue";
 
 export default {
   name: "Search",
   components: {
     SearchResults,
+    SortAndFilterMenu,
   },
   head() {
     return getAllMetaInfo({
