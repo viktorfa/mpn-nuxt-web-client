@@ -64,6 +64,7 @@ export const actions = {
     commit(productMutations.setIsSearching, false);
   },
   async [productActions.FILTER]({ commit, state }, { filters, sort }) {
+    commit(productMutations.setIsFiltering, true);
     const { data: products, error } = await searchGroceryOffers(
       state.searchQuery,
     );
@@ -78,6 +79,7 @@ export const actions = {
       commit(productMutations.setErrorMessage, error);
       console.error(error);
     }
+    commit(productMutations.setIsFiltering, false);
   },
   async [productActions.LOAD_DETAIL_PRODUCT]({ commit }, { id }) {
     if (isProductUri(id)) {

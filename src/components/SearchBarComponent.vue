@@ -89,4 +89,7 @@ export default {
 .v-autocomplete__content {
   top: 56px !important; /* Autocomplete for type-ahead covers all screen on mobile so we push it down */
 }
+.v-text-field__details {
+  display: none;
+}
 </style>

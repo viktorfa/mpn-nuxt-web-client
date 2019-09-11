@@ -14,6 +14,7 @@ export const simpleProductSetters = {
   setErrorMessage: "errorMessage",
   setDetailProduct: "detailProduct",
   setFilter: "filter",
+  setIsFiltering: "isFiltering",
 };
 
 export const simpleUiSetters = {

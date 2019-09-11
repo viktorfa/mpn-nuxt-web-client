@@ -1,6 +1,8 @@
 <template>
   <div>
-    <SortAndFilterMenu />
+    <client-only>
+      <SortAndFilterMenu />
+    </client-only>
     <div v-show="isSearching === true" class="text-3xl text-center">
       <p>søker etter</p>
       <strong>{{ queryString }}</strong>
