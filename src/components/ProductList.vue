@@ -1,17 +1,23 @@
 <template>
   <div>
-  
     <div class="flex flex-wrap justify-around">
       <template v-for="product in _products">
         <ProductListItem
           :key="product.id"
-          v-bind="product"
           :showDealerLogo="showDealerLogo"
           :showSubtitle="showSubtitle"
+          v-bind="product"
         />
       </template>
     </div>
-    <v-btn @click="showMore" v-if="isMore" color="blue darken-4" block text>mer</v-btn>
+    <v-btn
+      v-if="isMore"
+      v-enter-viewport="useInfiniteScroll ? showMore : null"
+      color="blue darken-4"
+      block
+      text
+      @click="showMore"
+    >mer</v-btn>
     <br v-else />
   </div>
 </template>
@@ -24,10 +30,11 @@ export default {
   name: "ProductList",
   components: { ProductListItem },
   props: {
-    products: Array,
+    products: { type: Array, default: () => [] },
     showSubtitle: { type: Boolean, default: true },
     showDealerLogo: { type: Boolean, default: true },
     pageSize: { type: Number, default: 10 },
+    useInfiniteScroll: { type: Boolean, default: true },
   },
   data() {
     return {
@@ -46,7 +53,7 @@ export default {
     },
   },
   methods: {
-    showMore: function() {
+    showMore() {
       this.pageNumber += 1;
     },
   },
